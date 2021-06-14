@@ -1,0 +1,48 @@
+---
+# 
+# This package contains the automation for sending motion notifications
+#
+
+- alias: WDC01CAM01 Motion Recorded
+  trigger:
+    - platform: mqtt
+      topic: motion/WDC01CAM01/record
+  action:
+    - service: notify.ADMIN_DEVICES
+      data:
+        title: WDC01CAM01
+        message: Motion Recorded {{ "\u25b6\ufe0f" }}
+        data:
+          clickAction: "{{ trigger.payload_json.url }}"
+          image: "{{ trigger.payload_json.image }}"
+          group: Hassio
+          priority: high
+
+- alias: WDC01CAM01 Motion Detected
+  trigger:
+    - platform: mqtt
+      topic: motion/WDC01CAM01/detect/start
+  action:
+    - service: notify.ADMIN_DEVICES
+      data:
+        title: WDC01CAM01
+        message: Motion Detected {{ "\ud83d\udd34" }}
+        data:
+          tag: "WDC01CAM01"
+          clickAction: "{{ trigger.payload_json.url }}"
+          image: "{{ trigger.payload_json.image }}"
+          group: Hassio
+          priority: high
+          persistent: true
+          color: "#DC3545"
+
+- alias: WDC01CAM01 Clear Motion Detection
+  trigger:
+    - platform: mqtt
+      topic: motion/WDC01CAM01/detect/stop
+  action:
+    - service: notify.ADMIN_DEVICES
+      data:
+        message: "clear_notification"
+        data:
+          tag: "WDC01CAM01"
